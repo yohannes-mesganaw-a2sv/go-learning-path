@@ -75,13 +75,13 @@ func main() {
 		for {
 
 			line, err := reader.ReadString('\n')
+			grade.subjectName = line
 
 			if grade.subjectName == "" || err != nil {
 				fmt.Println("\n Subject Name cannot be Empty. Please enter the subject name.")
 			} else {
 				break
 			}
-			grade.subjectName = line
 
 		}
 
