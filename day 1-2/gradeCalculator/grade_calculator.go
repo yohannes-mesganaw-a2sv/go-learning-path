@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+)
 
 type Student struct {
 	name string
@@ -26,13 +31,18 @@ func (student Student) calculateAverageGrade() float64 {
 }
 
 func main() {
+	// bufio.NewReader is used when we want to input a full line.
+	reader := bufio.NewReader(os.Stdin)
+
 	var student Student
 	fmt.Println("Enter your name: ")
 	for {
 
 		fmt.Scanln(&student.name)
+		line, err := reader.ReadString('\n')
+		student.name = line
 
-		if student.name == "" {
+		if student.name == "" || err != nil {
 			fmt.Println("\n Name cannot be Empty. Please enter your name.")
 		} else {
 			break
@@ -41,10 +51,12 @@ func main() {
 
 	// accept the amoung of subjects
 	var subjectCount int
+	var numberInput string
 	fmt.Println("Enter the number of subjects: ")
 	for {
 
-		_, err := fmt.Scanln(&subjectCount)
+		_, err := fmt.Scan(&numberInput)
+		subjectCount, err = strconv.Atoi(numberInput)
 
 		if err != nil {
 			fmt.Println("\nInvalid Input. Please enter a number.")
@@ -62,13 +74,15 @@ func main() {
 		fmt.Println("Enter the subject name: ")
 		for {
 
-			fmt.Scanln(&grade.subjectName)
+			line, err := reader.ReadString('\n')
 
-			if grade.subjectName == "" {
+			if grade.subjectName == "" || err != nil {
 				fmt.Println("\n Subject Name cannot be Empty. Please enter the subject name.")
 			} else {
 				break
 			}
+			grade.subjectName = line
+
 		}
 
 		// accept the grade
@@ -76,14 +90,16 @@ func main() {
 
 		for {
 
-			_, err := fmt.Scanln(&grade.gradePoint)
+			_, err := fmt.Scan(&numberInput)
+			grade.gradePoint, err = strconv.ParseFloat(numberInput, 64)
 
-			if err != nil {
+			// check if the grade point is a number and also with in the range of 0 - 100
+			if err != nil || grade.gradePoint > 100 || grade.gradePoint < 0 {
 				fmt.Println("\nInvalid Input. Please enter a number.")
 			} else {
 				break
-			}
 
+			}
 		}
 
 		student.grades = append(student.grades, grade)

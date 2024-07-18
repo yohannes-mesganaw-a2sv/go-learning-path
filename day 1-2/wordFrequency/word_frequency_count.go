@@ -1,25 +1,33 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
 
 func main() {
-	var word string
-	fmt.Println("Enter a word: ")
+	// bufio is used when we want to read in a full line
+	reader := bufio.NewReader(os.Stdin)
+	var sentence string
+	fmt.Println("Enter a sentence: ")
 	for {
-		fmt.Scanln(&word)
+		line, err := reader.ReadString('\n')
+		sentence = line
 
-		if word == "" {
-			fmt.Println("\n Word cannot be Empty. Please enter a word.")
+		if sentence == "" || err != nil {
+			fmt.Println("\n sentence cannot be Empty. Please enter a sentence.")
 		} else {
 			break
 		}
 	}
 
-	// count the frequency of each word
+	// count the frequency of each sentence
 	wordFrequency := make(map[string]int)
 
-	for _, word := range word {
-		wordFrequency[word]++
+	for _, word := range strings.Split(sentence, " ") {
+		wordFrequency[strings.TrimSpace(word)]++
 	}
 
 	fmt.Println("Word Frequency: ")
