@@ -45,18 +45,29 @@ func getSingleTask(c *gin.Context) {
 func updateTask(c *gin.Context) {
 	id := c.Param("id")
 	// var task Task
-	var task Task
+	var updatedTask Task
+
+	// check if it is a valid json
+	if err := c.BindJSON(&updatedTask); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
 
 	// update task from the given input
 	for i := 0; i < len(Tasks); i++ {
 		if Tasks[i].ID == id {
-			err := c.BindJSON(&task)
 
-			if err != nil {
-				c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err})
-				return
+			// udpate the fields specifically if they are not empty or exist on the body
+			if updatedTask.Title != "" {
+				Tasks[i].Title = updatedTask.Title
+			} else if updatedTask.Description != "" {
+				Tasks[i].Description = updatedTask.Description
+			} else if updatedTask.Status != "" {
+				Tasks[i].Status = updatedTask.Status
+			} else if updatedTask.DueDate != "" {
+				Tasks[i].DueDate = updatedTask.DueDate
 			}
-			Tasks[i] = task
+
 			c.IndentedJSON(http.StatusOK, Tasks[i])
 			return
 		}
@@ -78,13 +89,26 @@ func postTask(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "success"})
 }
 
+func deleteTask(ctx *gin.Context){
+	id := ctx.Param("id")
+	for i, task := range Tasks {
+		if task.ID == id {
+			Tasks = append(Tasks[:i], Tasks[i+1:]...)
+			ctx.IndentedJSON(http.StatusOK, gin.H{"message": "Task Deleted"})
+			return
+		}
+	}
+	ctx.IndentedJSON(http.StatusNotFound, gin.H{"message": "Task Not Found"})
+}
+
 func main() {
 	router := gin.Default()
 
 	router.GET("/tasks", getAllTasks)
 	router.GET("/tasks/:id", getSingleTask)
 	router.POST("/tasks", postTask)
-	router.PUT("/tasks/:id", updateTask)
+	router.PATCH("/tasks/:id", updateTask)
+	router.DELETE("/tasks/:id", deleteTask )
 
 	router.Run("localhost:9000")
 
