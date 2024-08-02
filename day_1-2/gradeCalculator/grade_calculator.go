@@ -57,7 +57,7 @@ func newStudent(reader *bufio.Reader ) *Student {
 		name = strings.TrimSpace(name) // Remove any trailing newline characters
 
 		if err != nil || name == "" || containsSpecialCharacterOrNumber(name ){
-			fmt.Print("Invalid Name. Please Input a Valid Name.")
+			fmt.Print("Invalid Name. Please Input a Valid Name:")
 		} else {
 			student.name = name
 			break
@@ -78,7 +78,7 @@ func populateGrade(student *Student , reader *bufio.Reader){
 		subjectCount, err = strconv.Atoi(numberInput)
 
 		if err != nil || subjectCount <= 0 {
-			fmt.Println("Invalid input. Please enter a valid number.")
+			fmt.Println("Invalid input. Please enter a valid number:")
 		} else {
 			break
 		}
@@ -95,7 +95,7 @@ func populateGrade(student *Student , reader *bufio.Reader){
 			subjectName = strings.TrimSpace(subjectName)
 
 			if err != nil || subjectName == "" || containsSpecialCharacterOrNumber(subjectName) {
-				fmt.Print("Please enter valid subject name.")
+				fmt.Print("Please enter valid subject name:")
 			} else {
 				grade.subjectName = subjectName
 				break
@@ -110,7 +110,7 @@ func populateGrade(student *Student , reader *bufio.Reader){
 			grade.gradePoint, err = strconv.ParseFloat(gradeInput, 64)
 
 			if err != nil || grade.gradePoint < 0 || grade.gradePoint > 100 {
-				fmt.Println("Invalid input. Please enter a number between 0 and 100.")
+				fmt.Println("Invalid input. Please enter a number between 0 and 100:")
 			} else {
 				break
 			}
@@ -132,7 +132,8 @@ func displayStudentInfo(student *Student ) {
 
 	averageGrade, err := student.calculateAverageGrade()
 	if err != nil {
-		fmt.Println("No grades found. Average grade cannot be calculated")
+		// display the message from the error
+		fmt.Println(err.Error())
 		return
 		}
 
